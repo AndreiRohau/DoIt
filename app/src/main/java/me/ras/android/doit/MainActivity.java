@@ -1,23 +1,31 @@
 package me.ras.android.doit;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import me.ras.android.doit.adapter.ToDoAdapter;
 import me.ras.android.doit.model.ToDoModel;
+import me.ras.android.doit.util.DatabaseHandler;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DialogCloseListener {
 
     private RecyclerView tasksRecyclerView;
     private ToDoAdapter toDoAdapter;
+    private FloatingActionButton floatingActionButton;
 
     private List<ToDoModel> toDoModels;
+    private DatabaseHandler dbh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,21 +33,35 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
+        dbh = new DatabaseHandler(this);
+        dbh.openDatabase();
+
         toDoModels = new ArrayList<>();
 
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        toDoAdapter = new ToDoAdapter(this);
+        toDoAdapter = new ToDoAdapter(dbh, this);
         tasksRecyclerView.setAdapter(toDoAdapter);
 
-        ToDoModel task = new ToDoModel(1, 0, "This is a Test Task");
+        floatingActionButton = findViewById(R.id.fab);
 
-        toDoModels.add(task);
-        toDoModels.add(new ToDoModel(2, 0, "This is a Test Task-2"));
-        toDoModels.add(new ToDoModel(3, 0, "This is a Test Task-3"));
-        toDoModels.add(new ToDoModel(4, 0, "This is a Test Task-4"));
-        toDoModels.add(new ToDoModel(5, 0, "This is a Test Task-5"));
-
+        toDoModels = dbh.getAllTasks();
+        Collections.reverse(toDoModels);
         toDoAdapter.setToDoModels(toDoModels);
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
+            }
+        });
+    }
+
+    @Override
+    public void handleDialogClose(DialogInterface dialog) {
+        toDoModels = dbh.getAllTasks();
+        Collections.reverse(toDoModels);
+        toDoAdapter.setToDoModels(toDoModels);
+        toDoAdapter.notifyDataSetChanged();
     }
 }

@@ -31,7 +31,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private SQLiteDatabase db;
 
-    private DatabaseHandler(Context context) {
+    public DatabaseHandler(Context context) {
         super(context, NAME, null, VERSION);
     }
 
@@ -58,7 +58,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert(TODO_TABLE, null, contentValues);
     }
 
-    @SuppressLint("JAVA_v1.8")
+    @SuppressLint("NewApi")
     public List<ToDoModel> getAllTasks() {
         List<ToDoModel> toDoModels = new ArrayList<>();
         db.beginTransaction();
