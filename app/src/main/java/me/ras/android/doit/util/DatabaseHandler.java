@@ -15,19 +15,19 @@ import me.ras.android.doit.model.ToDoModel;
 import static java.util.Objects.nonNull;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
-    public static final int VERSION = 1;
-    public static final String NAME = "toDoDatabase";
-    public static final String TODO_TABLE = "todo";
-    public static final String ID = "id";
-    public static final String TASK = "task";
-    public static final String STATUS = "status";
-    public static final String CREATE_TODO_TABLE_QUERY = "" +
+    private static final int VERSION = 1;
+    private static final String NAME = "toDoDatabase";
+    private static final String TODO_TABLE = "todo";
+    private static final String ID = "id";
+    private static final String TASK = "task";
+    private static final String STATUS = "status";
+    private static final String CREATE_TODO_TABLE_QUERY = "" +
             "CREATE TABLE " + TODO_TABLE + " ( \n" +
             ID + " INTEGER PRIMARY KEY, \n" +
             TASK + " TEXT, \n" +
             STATUS + " INTEGER \n" +
             ") \n";
-    public static final String DROP_TODO_TABLE_QUERY = "DROP TABLE IF EXISTS " + TODO_TABLE;
+    private static final String DROP_TODO_TABLE_QUERY = "DROP TABLE IF EXISTS " + TODO_TABLE;
 
     private SQLiteDatabase db;
 
