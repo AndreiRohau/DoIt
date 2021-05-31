@@ -2,7 +2,6 @@ package me.ras.android.doit;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -49,12 +48,8 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         Collections.reverse(toDoModels);
         toDoAdapter.setToDoModels(toDoModels);
 
-        floatingActionButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
-            }
-        });
+        floatingActionButton.setOnClickListener(
+                view -> AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG));
     }
 
     @Override
