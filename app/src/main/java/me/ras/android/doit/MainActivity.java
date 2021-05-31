@@ -4,12 +4,12 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,12 +35,13 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         dbh = new DatabaseHandler(this);
         dbh.openDatabase();
 
-        toDoModels = new ArrayList<>();
-
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         toDoAdapter = new ToDoAdapter(dbh, this);
         tasksRecyclerView.setAdapter(toDoAdapter);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new RecyclerItemTouchHelper(toDoAdapter));
+        itemTouchHelper.attachToRecyclerView(tasksRecyclerView);
 
         floatingActionButton = findViewById(R.id.fab);
 

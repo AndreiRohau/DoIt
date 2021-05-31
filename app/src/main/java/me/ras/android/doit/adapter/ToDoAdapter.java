@@ -19,9 +19,9 @@ import me.ras.android.doit.model.ToDoModel;
 import me.ras.android.doit.util.DatabaseHandler;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
-    private List<ToDoModel> toDoModels;
     private MainActivity mainActivity;
     private DatabaseHandler dbh;
+    private List<ToDoModel> toDoModels;
 
     public ToDoAdapter(DatabaseHandler dbh, MainActivity mainActivity) {
         this.dbh = dbh;
@@ -33,12 +33,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         View itemView = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.task_layout, parent, false);
-        return new ViewHolder(itemView) {
-            @Override
-            public String toString() {
-                return super.toString();
-            }
-        };
+        return new ViewHolder(itemView);
     }
 
     @Override
@@ -47,14 +42,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         ToDoModel item = toDoModels.get(position);
         holder.task.setText(item.getTask());
         holder.task.setChecked(intToBoolean(item.getStatus()));
-        holder.task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    dbh.updateStatus(item.getId(), 1);
-                } else {
-                    dbh.updateStatus(item.getId(), 0);
-                }
+        holder.task.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if (isChecked) {
+                dbh.updateStatus(item.getId(), 1);
+            } else {
+                dbh.updateStatus(item.getId(), 0);
             }
         });
     }
@@ -75,6 +67,13 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
     public Context getContext() {
         return mainActivity;
+    }
+
+    public void deleteItem(int position) {
+        ToDoModel item = toDoModels.get(position);
+        dbh.deleteTask(item.getId());
+        toDoModels.remove(position);
+        notifyItemRemoved(position);
     }
 
     public void editItem(int position) {

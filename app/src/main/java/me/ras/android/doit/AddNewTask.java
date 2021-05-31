@@ -63,6 +63,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
             isUpdate = true;
             String task = bundle.getString("task");
             newTaskText.setText(task);
+//            assert task != null;
             if (task.length() > 0) {
                 newTaskSaveButton.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
             }
@@ -70,6 +71,10 @@ public class AddNewTask extends BottomSheetDialogFragment {
         newTaskText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if ("".equals(charSequence.toString())) {
                     newTaskSaveButton.setEnabled(false);
                     newTaskSaveButton.setTextColor(Color.GRAY);
@@ -80,30 +85,23 @@ public class AddNewTask extends BottomSheetDialogFragment {
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
             public void afterTextChanged(Editable editable) {
 
             }
         });
 
         boolean finalIsUpdate = isUpdate;
-        newTaskSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = newTaskText.getText().toString();
-                if (finalIsUpdate) {
-                    dbh.updateTask(bundle.getInt("id"), text);
-                } else {
-                    ToDoModel toDoModel = new ToDoModel();
-                    toDoModel.setTask(text);
-                    toDoModel.setStatus(0);
-                }
-                dismiss();
+        newTaskSaveButton.setOnClickListener(v -> {
+            String text = newTaskText.getText().toString();
+            if (finalIsUpdate) {
+                dbh.updateTask(bundle.getInt("id"), text);
+            } else {
+                ToDoModel toDoModel = new ToDoModel();
+                toDoModel.setTask(text);
+                toDoModel.setStatus(0);
+                dbh.insertTask(toDoModel);
             }
+            dismiss();
         });
     }
 
